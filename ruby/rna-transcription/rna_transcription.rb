@@ -6,6 +6,6 @@ module Complement
                      'T' => 'A',
                      'A' => 'U' }.freeze
   def self.of_dna(strand)
-    strand.chars.map { |nucleotide| DNA_COMPLEMENT[nucleotide] }.join
+    strand.gsub(/[GCTA]/, DNA_COMPLEMENT)
   end
 end
