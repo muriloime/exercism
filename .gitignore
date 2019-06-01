@@ -38,3 +38,7 @@ yarn-debug.log*
 **/node_modules/
 # local-history plugin in vscode
 **/.history 
+
+
+
+**/__pycache__/
