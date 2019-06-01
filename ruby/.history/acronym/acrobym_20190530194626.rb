@@ -1,0 +1,2 @@
+module Acronym
+  def self.
