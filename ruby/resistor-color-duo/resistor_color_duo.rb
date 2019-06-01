@@ -13,6 +13,6 @@ module ResistorColorDuo
                      white: 9 }.freeze
 
   def self.value(bands)
-    bands
+    bands.map { |band| COLLOR_MAPPING[band.to_sym] }.map(&:to_s).join.to_i
   end
 end
