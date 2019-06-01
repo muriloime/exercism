@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 module ResistorColorDuo
-  COLLOR_MAPPING = { black: 0,
-                     brown: 1,
-                     red: 2,
-                     orange: 3,
-                     yellow: 4,
-                     green: 5,
-                     blue: 6,
-                     violet: 7,
-                     grey: 8,
-                     white: 9 }.freeze
+  COLOR_MAPPING = { 'black' => 0,
+                    'brown' => 1,
+                    'red' => 2,
+                    'orange' => 3,
+                    'yellow' => 4,
+                    'green' => 5,
+                    'blue' => 6,
+                    'violet' => 7,
+                    'grey' => 8,
+                    'white' => 9 }.freeze
 
   def self.value(bands)
-    bands.map { |band| COLLOR_MAPPING[band.to_sym] }.map(&:to_s).join.to_i
+    bands.map(&COLOR_MAPPING).join.to_i
   end
 end
