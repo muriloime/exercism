@@ -35,5 +35,6 @@ yarn-debug.log*
 
 .env
 
+**/node_modules/
 # local-history plugin in vscode
 **/.history 
