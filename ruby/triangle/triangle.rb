@@ -9,30 +9,31 @@ class Triangle
     @sides.select(&:positive?).count == 3
   end
 
-  def triangle_condition?
+  def triangle_inequality?
     a, b, c = @sides.sort
     a + b > c
   end
 
-  def triangle?
-    valid_sides? && triangle_condition?
+  def valid?
+    valid_sides? && triangle_inequality?
   end
 
-  def max_matching_sides
+  def matching_sides
     @sides.group_by(&:itself)
           .map { |_side, group| group.count }
-          .max
+          .select { |cnt| cnt > 1 }
+          .max.to_i
   end
 
   def equilateral?
-    triangle? && max_matching_sides == 3
+    valid? && matching_sides == 3
   end
 
   def isosceles?
-    triangle? && max_matching_sides >= 2
+    valid? && matching_sides >= 2
   end
 
   def scalene?
-    triangle? && max_matching_sides == 1
+    valid? && matching_sides.zero?
   end
 end
