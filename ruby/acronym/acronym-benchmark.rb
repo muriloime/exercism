@@ -1,28 +1,24 @@
-require 'benchmark/ips'
+# frozen_string_literal: true
 
+require 'benchmark/ips'
 Benchmark.ips do |x|
-  x.config(:time => 5, :warmup => 2)
-  times = 400
-  x.report("upcase first") do |times|
-    i = 0
-    while i < times
-      "x " * 10000 + "asdfdsffd sdfdsf  dfdff  sdfdfdf   d d d dd d ddlfskjsfldjk sdfjfjfjjfj".upcase.scan(/\b[A-Z]/).join
-      i += 1
-    end
+  x.config(time: 5, warmup: 2)
+
+  sample_string = 'asdfdsffd sdfdsf  dfdff  sdfdfdf   d d d dd d ddlfskjsfldjk sdfjfjfjjfj'
+  x.report('upcase first') do |_|
+    sample_string.upcase.scan(/\b[A-Z]/).join
   end
-  x.report("upcase last") do |times|
-    i = 0
-    while i < times
-      "x " * 10000 + "asdfdsffd sdfdsf  dfdff  sdfdfdf   d d d dd d ddlfskjsfldjk sdfjfjfjjfj".scan(/\b[a-zA-Z]/).join.upcase
-      i += 1
-    end
+
+  x.report('upcase last') do |_|
+    sample_string.scan(/\b[a-zA-Z]/).join.upcase
+  end
+
+  x.report('upcase last with alpha') do |_|
+    sample_string.scan(/\b[[:alpha:]]/).join.upcase
+  end
+
+  x.report('upcase last simple ') do |_|
+    sample_string.scan(/\b\w/).join.upcase
   end
   x.compare!
 end
-
-
-# Benchmark.ips do |x|
-#   (1..1000).each do |i|
-#     "asdfdsffd sdfdsf  dfdff".scan(/\b[a-zA-Z]/).upcase.join
-#   end
-# end
