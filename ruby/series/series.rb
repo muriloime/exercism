@@ -8,6 +8,6 @@ class Series
   def slices(size)
     raise ArgumentError if size > @value.size
 
-    @value.chars.each_cons(size).map(&:join).to_a
+    @value.chars.each_cons(size).map(&:join)
   end
 end
