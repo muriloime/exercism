@@ -4,15 +4,13 @@ class Matrix
   attr_reader :rows
   def initialize(string_representation)
     @rows = string_representation
-            .split("\n")
+            .each_line
             .map do |row|
-              row.split(' ')
-                 .map(&:to_i)
+              row.split.map(&:to_i)
             end
   end
 
   def columns
-    first_row, *other_rows = rows
-    first_row.zip(*other_rows)
+    rows.transpose
   end
 end
