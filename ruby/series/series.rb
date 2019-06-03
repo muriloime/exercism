@@ -6,11 +6,8 @@ class Series
   end
 
   def slices(size)
-    str_size = @value.size
-    raise ArgumentError if size > str_size
+    raise ArgumentError if size > @value.size
 
-    (0..str_size).map do |i|
-      @value[i..i + size - 1] if i + size - 1 < str_size
-    end.compact
+    @value.chars.each_cons(size).map(&:join).to_a
   end
 end
