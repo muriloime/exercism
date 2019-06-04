@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 class Phrase
-  def initialize(string)
-    @string = string
+  REGEXPs = {
+    words: /\b[\w']+\b/
+  }.freeze
+
+  def initialize(phrase)
+    @phrase = phrase
   end
 
   def words
-    @string.scan(/[[:alnum:]]+(?:'[[:alnum:]]+)*/i).map(&:downcase)
+    @phrase.scan(REGEXPs[:words]).map(&:downcase)
   end
 
   def word_count
-    Hash[words.group_by(&:itself).map { |word, group| [word, group.count] }]
+    Hash[words
+        .group_by(&:itself)
+        .map { |word, group| [word, group.count] }]
   end
 end
