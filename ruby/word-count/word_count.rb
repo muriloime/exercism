@@ -14,8 +14,8 @@ class Phrase
   end
 
   def word_count
-    Hash[words
-        .group_by(&:itself)
-        .map { |word, group| [word, group.count] }]
+    words
+      .group_by(&:itself)
+      .transform_values(&:count)
   end
 end
