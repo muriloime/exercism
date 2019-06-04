@@ -7,7 +7,7 @@ module Grains
     2**(number - 1)
   end
 
-  def self.total
-    (1..64).map { |x| square(x) }.sum
+  def self.total(squares = 64)
+    2**squares - 1
   end
 end
