@@ -3,21 +3,30 @@
 class Anagram
   def initialize(word)
     @word = word.downcase
-  end
-
-  def char_counter(test_word)
-    Hash[test_word
-         .chars
-         .group_by(&:itself)
-         .map { |word| [word, word.count] }]
+    @word_counter = character_counter(@word)
   end
 
   def match(words)
-    word_counter = char_counter(@word)
     words.select do |candidate|
-      normalized_candidate = candidate.downcase
-      (normalized_candidate != @word &&
-        char_counter(normalized_candidate) == word_counter)
+      candidate = candidate.downcase
+      different?(candidate) && same_letters?(candidate)
     end
+  end
+
+  private
+
+  def different?(candidate)
+    candidate != @word
+  end
+
+  def character_counter(test_word)
+    test_word
+      .chars
+      .group_by(&:itself)
+      .transform_values(&:count)
+  end
+
+  def same_letters?(candidate)
+    character_counter(candidate) == @word_counter
   end
 end
