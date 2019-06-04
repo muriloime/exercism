@@ -2,17 +2,22 @@
 
 class Anagram
   def initialize(word)
-    @word = word
+    @word = word.downcase
   end
 
   def char_counter(test_word)
-    test_word.downcase.chars.group_by(&:itself).map { |x| [x, x.count] }.sort
+    Hash[test_word
+         .chars
+         .group_by(&:itself)
+         .map { |word| [word, word.count] }]
   end
 
   def match(words)
     word_counter = char_counter(@word)
     words.select do |candidate|
-      candidate.downcase != @word.downcase && char_counter(candidate) == word_counter
+      normalized_candidate = candidate.downcase
+      (normalized_candidate != @word &&
+        char_counter(normalized_candidate) == word_counter)
     end
   end
 end
