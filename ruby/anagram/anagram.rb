@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Anagram
+  attr_reader :word, :word_counter
+
   def initialize(word)
     @word = word.downcase
     @word_counter = character_counter(@word)
@@ -16,7 +18,7 @@ class Anagram
   private
 
   def different?(candidate)
-    candidate != @word
+    candidate != word
   end
 
   def character_counter(test_word)
@@ -27,6 +29,6 @@ class Anagram
   end
 
   def same_letters?(candidate)
-    character_counter(candidate) == @word_counter
+    character_counter(candidate) == word_counter
   end
 end
