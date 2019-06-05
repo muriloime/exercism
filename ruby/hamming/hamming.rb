@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-module Hamming
-  def self.compute(string1, string2)
-    raise ArgumentError if string1.size != string2.size
+# frozen_strand_literal: true
 
-    string1.chars.zip(string2.chars).reject { |c1, c2| c1 == c2 }. count
+module Hamming
+  def self.compute(strand1, strand2)
+    raise ArgumentError if strand1.size != strand2.size
+
+    nucleotides = strand1.chars.zip(strand2.chars)
+    nucleotides.count { |n1, n2| n1 != n2 }
   end
 end
