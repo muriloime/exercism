@@ -17,21 +17,25 @@ class Triplet
     (@a**2 + @b**2 - @c**2).zero?
   end
 
-  def self.candidates(min_factor:, max_factor:, sum:, product:)
+  def self.possible_triplets(min_factor, max_factor)
     factors = (min_factor..max_factor).to_a
-    candidates = factors.product(factors).product(factors).map(&:flatten).map(&:sort).uniq
-    candidates.map { |triplet| Triplet.new(*triplet) }.select do |triplet|
-      ((sum && triplet.sum == sum) || !sum) &&
-        ((product && triplet.product == product) || !product)
+    every_permutation = factors.product(factors).product(factors)
+    triplets = every_permutation.map(&:flatten).map(&:sort).uniq
+    triplets.map { |triplet| Triplet.new(*triplet) }
+  end
+
+  def self.filter(candidates, sum, product)
+    candidates.select do |triplet|
+      (!sum || triplet.sum == sum) &&
+        (!product || triplet.product == product)
     end
   end
 
   def self.where(min_factor: 1, max_factor:, sum: nil, product: nil)
-    candidates = self.candidates(min_factor: min_factor,
-                                 max_factor: max_factor,
-                                 product: product,
-                                 sum: sum)
-    candidates.select(&:pythagorean?)
+    all_triplets = possible_triplets(min_factor, max_factor)
+    filter(all_triplets,
+           sum,
+           product).select(&:pythagorean?)
   end
 
   private
