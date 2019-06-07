@@ -1,9 +1,8 @@
 module PhoneNumber
-  VALID_PHONE_REGEX = /\b[2-9]\d{2}[2-9]\d{2}\d{4}\b/.freeze
+  VALID_PHONE_REGEX = /^([2-9]\d{2}){2}\d{4}$/.freeze
 
   def self.clean(number)
-    cleaned_number = number.gsub(/\D/, '')
-    cleaned_number[0] = '' if cleaned_number[0] == '1'
-    cleaned_number.scan(VALID_PHONE_REGEX).first
+    cleaned_number = number.gsub(/\D/, '').sub(/^1/, '')
+    cleaned_number[VALID_PHONE_REGEX]
   end
 end
