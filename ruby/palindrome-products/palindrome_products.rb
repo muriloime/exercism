@@ -1,5 +1,4 @@
 class Palindromes
-
   def initialize(max_factor:, min_factor: 1)
     @max_factor = max_factor
     @min_factor = min_factor
@@ -15,6 +14,7 @@ class Palindromes
 
   def grouped_factors
     factors.group_by { |pair| pair.reduce(&:*) }
+           .sort_by { |x, _| -x }
   end
 
   def largest
@@ -27,7 +27,6 @@ class Palindromes
 
   def generate
     @palindromes = grouped_factors
-                   .sort_by { |x, _| -x }
                    .select { |number, _| palindrome?(number) }
                    .map { |number, factors| Palindrome.new(number, factors) }
   end
