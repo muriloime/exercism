@@ -3,6 +3,38 @@ require_relative 'alphametics'
 
 # Common test data version: 1.3.0 361cf3c
 class AlphameticsTest < Minitest::Test
+  def test_permutations_with_no_restrictions
+    # skip
+    puzzle = 'I + BB == ILL'
+    assert_equal 576, Alphametics.new(puzzle).permutations.count
+  end
+
+  def test_permutations_zero_possinble_on_0
+    # skip
+    puzzle = 'ACA + DD == BD'
+    assert_equal [1], Alphametics.new(puzzle).zero_possible
+  end
+
+  def test_permutations_with_restrictions_on_0
+    # skip
+    puzzle = 'ACA + DD == BD'
+    assert_equal 3528, Alphametics.new(puzzle).permutations.count
+  end
+
+  def test_permutations_with_no_0_possible
+    # skip
+    puzzle = 'A == B'
+    expected = []
+    assert_equal expected, Alphametics.new(puzzle).zero_possible
+  end
+
+  def test_permutations_with_no_0_possible
+    # skip
+    puzzle = 'A == B'
+    expected = (1..9).to_a.permutation(2).to_a
+    assert_equal expected, Alphametics.new(puzzle).permutations.to_a
+  end
+
   def test_puzzle_with_three_letters
     # skip
     puzzle = 'I + BB == ILL'
@@ -69,7 +101,7 @@ class AlphameticsTest < Minitest::Test
   # but an optimised solution can solve it fairly quickly.
   # (It's OK to submit your solution without getting this test to pass.)
   def test_puzzle_with_ten_letters
-    skip
+    # skip
     puzzle = 'AND + A + STRONG + OFFENSE + AS + A + GOOD == DEFENSE'
     expected = { 'A' => 5, 'D' => 3, 'E' => 4, 'F' => 7,
                  'G' => 8, 'N' => 0, 'O' => 2, 'R' => 1,
@@ -83,7 +115,7 @@ class AlphameticsTest < Minitest::Test
   #
   # Remove 'do_not_' from the test name to run this test.
   def test_puzzle_with_ten_letters_and_199_addends
-    skip
+    # skip
     puzzle = 'THIS + A + FIRE + THEREFORE + FOR + ALL + HISTORIES + I + TELL + A + TALE + THAT + FALSIFIES + ITS + TITLE + TIS + A + LIE + THE + TALE + OF + THE + LAST + FIRE + HORSES + LATE + AFTER + THE + FIRST + FATHERS + FORESEE + THE + HORRORS + THE + LAST + FREE + TROLL + TERRIFIES + THE + HORSES + OF + FIRE + THE + TROLL + RESTS + AT + THE + HOLE + OF + LOSSES + IT + IS + THERE + THAT + SHE + STORES + ROLES + OF + LEATHERS + AFTER + SHE + SATISFIES + HER + HATE + OFF + THOSE + FEARS + A + TASTE + RISES + AS + SHE + HEARS + THE + LEAST + FAR + HORSE + THOSE + FAST + HORSES + THAT + FIRST + HEAR + THE + TROLL + FLEE + OFF + TO + THE + FOREST + THE + HORSES + THAT + ALERTS + RAISE + THE + STARES + OF + THE + OTHERS + AS + THE + TROLL + ASSAILS + AT + THE + TOTAL + SHIFT + HER + TEETH + TEAR + HOOF + OFF + TORSO + AS + THE + LAST + HORSE + FORFEITS + ITS + LIFE + THE + FIRST + FATHERS + HEAR + OF + THE + HORRORS + THEIR + FEARS + THAT + THE + FIRES + FOR + THEIR + FEASTS + ARREST + AS + THE + FIRST + FATHERS + RESETTLE + THE + LAST + OF + THE + FIRE + HORSES + THE + LAST + TROLL + HARASSES + THE + FOREST + HEART + FREE + AT + LAST + OF + THE + LAST + TROLL + ALL + OFFER + THEIR + FIRE + HEAT + TO + THE + ASSISTERS + FAR + OFF + THE + TROLL + FASTS + ITS + LIFE + SHORTER + AS + STARS + RISE + THE + HORSES + REST + SAFE + AFTER + ALL + SHARE + HOT + FISH + AS + THEIR + AFFILIATES + TAILOR + A + ROOFS + FOR + THEIR + SAFE == FORTRESSES'
     expected = { 'A' => 1, 'E' => 0, 'F' => 5, 'H' => 8,
                  'I' => 7, 'L' => 2, 'O' => 6, 'R' => 3,

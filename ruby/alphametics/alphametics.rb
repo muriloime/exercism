@@ -1,6 +1,7 @@
 class Alphametics
   LETTERS = /[A-Z]/.freeze
   DIGITS = (0..9).to_a
+  NON_ZERO_DIGITS = (1..9).to_a
 
   attr_reader :puzzle
 
@@ -24,20 +25,25 @@ class Alphametics
     new(puzzle).solve
   end
 
-  private
-
   def permutations
-    DIGITS.permutation(unknowns.length)
-  end
-
-  def unknowns
-    @unknowns ||= puzzle.scan(LETTERS).uniq
+    [
+      NON_ZERO_DIGITS.permutation(unknowns.length),
+      NON_ZERO_DIGITS.permutation(unknowns.length - 1).lazy
+                     .flat_map { |perm| zero_possible.map { |idx| perm.dup.insert(idx, 0) } }
+    ].lazy.flat_map(&:lazy)
+    # DIGITS.permutation(unknowns.length)
   end
 
   def zero_possible
-    @zero_possible ||= (0..unknowns.length).to_a -
-                       puzzle.scan(/(\s|\A)\w/)
+    @zero_possible ||= (0..unknowns.length - 1).to_a -
+                       puzzle.scan(/\b\w/)
                              .uniq
                              .map { |letter| unknowns.index(letter) }
+  end
+
+  private
+
+  def unknowns
+    @unknowns ||= puzzle.scan(LETTERS).uniq
   end
 end
