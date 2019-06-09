@@ -5,7 +5,7 @@ class Sieve
 
   def primes
     candidates = (2..@limit).to_a
-    (2..@limit).each do |number|
+    (2..(@limit**0.5).to_i).each do |number|
       candidates = candidates.reject do |candidate|
         number != candidate && (candidate % number).zero?
       end
