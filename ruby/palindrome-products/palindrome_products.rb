@@ -1,5 +1,4 @@
 class Palindromes
-  attr_reader :largest
 
   def initialize(max_factor:, min_factor: 1)
     @max_factor = max_factor
@@ -11,7 +10,7 @@ class Palindromes
   end
 
   def factors
-    range.product(range).map(&:sort).uniq
+    range.repeated_combination(2)
   end
 
   def grouped_factors
@@ -34,8 +33,7 @@ class Palindromes
   end
 
   def palindrome?(number)
-    characters = number.to_s.chars
-    characters.reverse == characters
+    number.to_s.then { |str| str.reverse == str }
   end
 end
 
