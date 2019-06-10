@@ -20,6 +20,8 @@ class Luhn
   end
 
   def luhn_double(digit)
+    return 0 if digit.nil?
+
     (digit * 2).then { |double| double > 9 ? double - 9 : double }
   end
 
@@ -36,7 +38,6 @@ class Luhn
   end
 
   def checksum
-    transform = %i[do_nothing luhn_double].cycle
-    digits.reverse.sum { |digit| send(transform.next, digit) }
+    digits.reverse.each_slice(2).sum { |a, b| a + luhn_double(b) }
   end
 end
