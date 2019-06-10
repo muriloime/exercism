@@ -22,7 +22,7 @@ module Translation
   end
 
   def self.of_rna(strand)
-    codons = strand.scan(/.../)
+    codons = strand.scan(/.{3}/)
     raise InvalidCodonError unless (codons - valid_codons).empty?
 
     codons.map(&CODON_TO_PROTEIN)
