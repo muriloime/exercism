@@ -3,6 +3,26 @@ class Luhn
     @id_number = id_number.delete(' ')
   end
 
+  def valid?
+    return false unless only_valid_characters? && !short_string?
+
+    (checksum % 10).zero?
+  end
+
+  def self.valid?(id_number)
+    new(id_number).valid?
+  end
+
+  private
+
+  def even_list
+    if digits.count.odd?
+      [0] + digits
+    else
+      digits
+    end
+  end
+
   def digits
     @id_number.scan(/\d/).map(&:to_i)
   end
@@ -26,25 +46,5 @@ class Luhn
   def checksum
     even_indices, odd_indices = split_digits
     odd_indices.sum { |x| compute_odd(x) } + even_indices.sum
-  end
-
-  def valid?
-    return false unless only_valid_characters? && !short_string?
-
-    (checksum % 10).zero?
-  end
-
-  def self.valid?(id_number)
-    new(id_number).valid?
-  end
-
-  private
-
-  def even_list
-    if digits.count.odd?
-      [0] + digits
-    else
-      digits
-    end
   end
 end
