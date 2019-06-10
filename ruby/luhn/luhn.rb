@@ -15,20 +15,16 @@ class Luhn
 
   private
 
-  def even_list
-    if digits.count.odd?
-      [0] + digits
-    else
-      digits
-    end
-  end
-
   def digits
     @id_number.scan(/\d/).map(&:to_i)
   end
 
-  def compute_odd(digit)
-    (digit * 2).then { |x| x > 9 ? x - 9 : x }
+  def luhn_double(digit)
+    (digit * 2).then { |double| double > 9 ? double - 9 : double }
+  end
+
+  def do_nothing(digit)
+    digit
   end
 
   def only_valid_characters?
@@ -39,12 +35,8 @@ class Luhn
     @id_number.size <= 1
   end
 
-  def split_digits
-    even_list.reverse.each_slice(2).to_a.transpose
-  end
-
   def checksum
-    even_indices, odd_indices = split_digits
-    odd_indices.sum { |x| compute_odd(x) } + even_indices.sum
+    transform = %i[do_nothing luhn_double].cycle
+    digits.reverse.sum { |digit| send(transform.next, digit) }
   end
 end
