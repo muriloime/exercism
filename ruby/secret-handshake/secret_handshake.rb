@@ -1,9 +1,9 @@
 class SecretHandshake
-  HANDSHAKE_STEP_CODES = { 1 => 'wink',
-                           2 => 'double blink',
-                           4 => 'close your eyes',
-                           8 => 'jump' }.freeze
-  REVERSE_CODE = 16
+  HANDSHAKE_STEP_CODES = { 0b00001 => 'wink',
+                           0b00010 => 'double blink',
+                           0b00100 => 'close your eyes',
+                           0b01000 => 'jump' }.freeze
+  REVERSE_CODE = 0b10000
 
   def initialize(code)
     @code = code.to_i
