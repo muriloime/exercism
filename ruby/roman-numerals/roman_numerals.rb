@@ -14,10 +14,8 @@ class Integer
                  ['I', 1]].freeze
 
   def to_roman
-    x = to_i
-
     ROMAN_TABLE.each do |roman, int|
-      return roman + (x - int).to_roman if x >= int
+      return roman + (self - int).to_roman if self >= int
     end
     ''
   end
