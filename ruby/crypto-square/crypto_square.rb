@@ -1,27 +1,27 @@
 class Crypto
+  attr_accessor :message
+
   def initialize(text)
-    @text = text
+    @message = text.downcase.scan(/\w/).join
   end
 
-  def condensed_text
-    @text.downcase.scan(/\w/).join
+  def ciphertext
+    return '' if message == ''
+
+    transposed_text.map(&:join).join(' ').gsub('  ', ' ')
   end
+
+  private
 
   def square_size
-    Math.sqrt(condensed_text.size).ceil
+    Math.sqrt(message.size).ceil
   end
 
   def squared_text
-    condensed_text.ljust(square_size**2, ' ')
+    message.ljust(square_size**2, ' ')
   end
 
   def transposed_text
     squared_text.chars.each_slice(square_size).to_a.transpose
-  end
-
-  def ciphertext
-    return '' if @text == ''
-
-    transposed_text.map(&:join).join(' ').gsub('  ', ' ')
   end
 end
