@@ -11,9 +11,9 @@ class WordProblem
   end
 
   def answer
-    raise ArgumentError unless @question.scan(/[a-zA-Z]/).empty?
+    raise ArgumentError unless @question !~ /[a-zA-Z]/
 
-    operands = @question.scan(%r{[\w\+\-\*/]+})
+    operands = @question.scan(%r{[\d\+\-\*/]+})
 
     operands[1..-1]
       .each_slice(2)
