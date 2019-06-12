@@ -3,14 +3,17 @@ class Cipher
 
   attr_reader :key
   def initialize(key = generate)
-    raise ArgumentError unless key != '' && key.scan(/[a-z]/).count == key.size
+    raise ArgumentError if key.match(/[^a-z]/) || key == ''
 
     @key = key
-    @shift = @key.chars.map { |letter| ALPHABET.index(letter) }
+  end
+
+  def shifts
+    key.chars.map { |letter| ALPHABET.index(letter) }
   end
 
   def encode(text, sign = 1)
-    text.chars.zip(@shift).map do |letter, shift|
+    text.chars.zip(shifts).map do |letter, shift|
       idx = ALPHABET.index(letter)
       ALPHABET.rotate(sign * shift)[idx]
     end.join
