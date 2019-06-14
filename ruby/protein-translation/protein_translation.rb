@@ -1,4 +1,5 @@
 module Translation
+  STOP = 'STOP'.freeze
   CODON_TO_PROTEIN = { 'AUG' =>	'Methionine',
                        'UUU' => 'Phenylalanine',
                        'UUC' => 'Phenylalanine',
@@ -13,9 +14,9 @@ module Translation
                        'UGU' => 'Cysteine',
                        'UGC' => 'Cysteine',
                        'UGG'	=> 'Tryptophan',
-                       'UAA' =>	'STOP',
-                       'UAG' =>	'STOP',
-                       'UGA' =>	'STOP' }.freeze
+                       'UAA' =>	STOP,
+                       'UAG' =>	STOP,
+                       'UGA' =>	STOP }.freeze
 
   def self.of_codon(codon)
     CODON_TO_PROTEIN[codon]
@@ -26,7 +27,7 @@ module Translation
     raise InvalidCodonError unless (codons - valid_codons).empty?
 
     codons.map(&CODON_TO_PROTEIN)
-          .take_while { |protein| protein != 'STOP' }
+          .take_while { |protein| protein != STOP }
   end
 
   def self.valid_codons
