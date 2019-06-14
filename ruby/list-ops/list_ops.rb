@@ -12,13 +12,11 @@ module ListOps
   end
 
   def self.mapper(array, &block)
-    fold(array, []) { |acc, x| acc << block.call(x) }
+    fold(array, []) { |acc, x| acc << block[x] }
   end
 
   def self.filterer(array, &block)
-    ret = []
-    array.each { |x| ret << x if block.call(x) }
-    ret
+    fold(array, []) { |acc, x| block[x] ? acc << x : acc }
   end
 
   def self.sum_reducer(array)
