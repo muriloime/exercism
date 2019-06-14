@@ -1,9 +1,9 @@
 class Robot
-  DIRECTIONS = %i[north east south west].freeze
   COORD_CHANGES = { north: [0, 1],
                     east: [1, 0],
                     south: [0, -1],
                     west: [-1, 0] }.freeze
+  DIRECTIONS = COORD_CHANGES.keys
 
   attr_accessor :bearing, :coordinates
   def initialize
