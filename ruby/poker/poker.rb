@@ -26,15 +26,15 @@ class Hand
   end
 
   def score
-    if straight? && flush?
-      [8, cards.map(&:value)]
+    if straight_flush
+      [8, straight_flush]
     elsif square
       [7, square]
     elsif fullhand
       [6, fullhand]
-    elsif flush?
+    elsif flush
       [5, cards.map(&:value)]
-    elsif straight?
+    elsif straight
       [4, cards.map(&:value)]
     elsif three?
       [3, cards.map(&:value)]
@@ -45,6 +45,10 @@ class Hand
     else
       [0, cards.map(&:value)]
     end
+  end
+
+  def straight_flush
+    return cards.map(&:value) if straight && flush
   end
 
   def counts
@@ -63,11 +67,11 @@ class Hand
     cards.group_by(&:value).transform_values(&:count).map(&:reverse).sort.reverse
   end
 
-  def flush?
+  def flush
     cards.map(&:kind).uniq.count == 1
   end
 
-  def straight?
+  def straight
     if cards.map(&:value) == [14, 5, 4, 3, 2]
       cards.first.as_one!
       @cards = cards.sort.reverse
