@@ -90,8 +90,14 @@ end
 
 class Card
   attr_reader :value, :kind
+  CARD_MAP = { 'J' => '11',
+               'Q' => '12',
+               'K' => '13',
+               'A' => '14' }.freeze
+
   def initialize(card)
-    @value, @kind = card.gsub('J', '11').gsub('Q', '12').gsub('K', '13').gsub('A', '14').scan(/(\d+)(\w)/).first
+    @value, @kind = card.gsub(Regexp.union(CARD_MAP.keys), CARD_MAP)
+                        .scan(/(\d+)(\w)/).first
     @value = @value.to_i
   end
 
