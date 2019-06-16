@@ -49,7 +49,5 @@ class Element
 
   def initialize(value)
     @value = value
-    @next = self
-    @prior = self
   end
 end
