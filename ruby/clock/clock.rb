@@ -11,11 +11,11 @@ class Clock
   end
 
   def +(other)
-    self.class.new(hour: 0, minute: minutes_passed + other.minutes_passed)
+    self.class.new(minute: minutes_passed + other.minutes_passed)
   end
 
   def -(other)
-    self.class.new(hour: 0, minute: minutes_passed - other.minutes_passed)
+    self.class.new(minute: minutes_passed - other.minutes_passed)
   end
 
   def hash
