@@ -10,11 +10,14 @@ class Poker
 end
 
 class Hand
-  VALUES = [:nothing].freeze
   attr_reader :cards
+
   def initialize(cards)
     @array = cards
+
     @cards = cards.map { |card| Card.new(card) }.sort.reverse
+    @cards.first.as_one! if @cards.map(&:value) == [14, 5, 4, 3, 2]
+    @cards = @cards.sort.reverse
   end
 
   def to_s
@@ -25,70 +28,67 @@ class Hand
     score <=> other.score
   end
 
+  BEST_HANDS = %i[straight_flush
+                  square
+                  fullhand
+                  flush
+                  straight
+                  three
+                  two_pair
+                  one_pair
+                  card_high].freeze
+
   def score
-    if straight_flush
-      [8, straight_flush]
-    elsif square
-      [7, square]
-    elsif fullhand
-      [6, fullhand]
-    elsif flush
-      [5, cards.map(&:value)]
-    elsif straight
-      [4, cards.map(&:value)]
-    elsif three?
-      [3, cards.map(&:value)]
-    elsif two_pair?
-      [2, cards.map(&:value)]
-    elsif one_pair?
-      [1, cards.map(&:value)]
-    else
-      [0, cards.map(&:value)]
-    end
+    BEST_HANDS.map.with_index do |hand, i|
+      [BEST_HANDS.count - i, send(hand)] if send(hand)
+    end.compact.first
+  end
+
+  def card_high
+    cards.map(&:value)
   end
 
   def straight_flush
-    return cards.map(&:value) if straight && flush
-  end
-
-  def counts
-    cards.group_by(&:value).transform_values(&:count).map(&:last)
+    straight && flush
   end
 
   def square
-    return unless counts.max == 4
-
-    cards.group_by(&:value).transform_values(&:count).map(&:reverse).sort.reverse
+    equal_cards [4]
   end
 
   def fullhand
-    return unless counts.max(2) == [3, 2]
-
-    cards.group_by(&:value).transform_values(&:count).map(&:reverse).sort.reverse
+    equal_cards [3, 2]
   end
 
   def flush
-    cards.map(&:kind).uniq.count == 1
+    return unless cards.map(&:kind).uniq.count == 1
+
+    card_high
   end
 
   def straight
-    if cards.map(&:value) == [14, 5, 4, 3, 2]
-      cards.first.as_one!
-      @cards = cards.sort.reverse
-    end
-    cards.map(&:value).each_cons(2).all? { |x, y| x - y == 1 }
+    return unless cards.map(&:value).each_cons(2).all? { |x, y| x - y == 1 }
+
+    card_high
   end
 
-  def three?
-    counts.max == 3
+  def three
+    equal_cards [3]
   end
 
-  def two_pair?
-    counts.max(2) == [2, 2]
+  def two_pair
+    equal_cards [2, 2]
   end
 
-  def one_pair?
-    counts.max == 2
+  def one_pair
+    equal_cards [2]
+  end
+
+  def equal_cards(equals)
+    counts = cards.group_by(&:value).transform_values(&:count)
+    return unless counts.map(&:last).max(equals.count) == equals
+
+    counts.map(&:reverse).sort.reverse
   end
 end
 
