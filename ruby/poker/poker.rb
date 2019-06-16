@@ -13,15 +13,13 @@ class Hand
   attr_reader :cards
 
   def initialize(cards)
-    @array = cards
-
+    @original_array = cards
     @cards = cards.map { |card| Card.new(card) }.sort.reverse
-    @cards.first.as_one! if @cards.map(&:value) == [14, 5, 4, 3, 2]
-    @cards = @cards.sort.reverse
+    @cards = @cards.rotate(1) if @cards.map(&:value) == [14, 5, 4, 3, 2]
   end
 
   def to_s
-    @array
+    @original_array
   end
 
   def <=>(other)
@@ -61,13 +59,13 @@ class Hand
   end
 
   def flush
-    return unless cards.map(&:kind).uniq.count == 1
+    return unless cards.map(&:suit).uniq.count == 1
 
     card_high
   end
 
   def straight
-    return unless cards.map(&:value).each_cons(2).all? { |x, y| x - y == 1 }
+    return unless cards.map(&:value).each_cons(2).all? { |x, y| [1, -12].include?(x - y) }
 
     card_high
   end
@@ -93,23 +91,18 @@ class Hand
 end
 
 class Card
-  attr_reader :value, :kind
-  CARD_MAP = { 'J' => '11',
-               'Q' => '12',
-               'K' => '13',
-               'A' => '14' }.freeze
+  attr_reader :rank, :suit
+  CARDS = %w[2 3 4 5 6 7 8 9 10 J Q K A].freeze
 
   def initialize(card)
-    @value, @kind = card.gsub(Regexp.union(CARD_MAP.keys), CARD_MAP)
-                        .scan(/(\d+)(\w)/).first
-    @value = @value.to_i
+    @rank, @suit = card.scan(/\b(\w+)([SHCD])\b/).first
+  end
+
+  def value
+    CARDS.index(@rank) + 2
   end
 
   def <=>(other)
     value <=> other.value
-  end
-
-  def as_one!
-    @value = 1 if value == 14
   end
 end
