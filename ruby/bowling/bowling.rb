@@ -26,14 +26,12 @@ class Game
     raise BowlingError unless valid?(@pins.last.flatten)
   end
 
-  def valid?(frame)
-    (frame.sum <= 10 && frame.count <= 2 && !last_frame) ||
-      (last_frame && frame.count <= 3 &&
-        (
-          (frame[0..1].uniq == [10]) ||
-          (frame[0] == 10 && frame[1..2].sum <= 10) ||
-          (frame[0..1].sum == 10 && frame.count <= 3) ||
-          (frame.count <= 2 && frame.sum <= 10)
+  def valid?(frame, last = last_frame)
+    (frame.sum <= 10 && frame.count <= 2) ||
+      (last && frame.count <= 3 &&
+        (frame[0..1] == [10, 10] ||
+          frame[0..1].sum == 10 ||
+          (frame[0] == 10 && valid?(frame[1..2].to_a, false))
         )
       )
   end
@@ -50,10 +48,7 @@ class Game
 
   def add_strike_scores
     @pins.map { |x| x[0..1] }.flatten(1).each_cons(3).each do |pins1, pins2, pins3|
-      if pins1.first == 10
-        pins1 << pins2.first
-        pins1 << pins3.first
-      end
+      pins1.append(pins2.first, pins3.first) if pins1.first == 10
     end
   end
 
