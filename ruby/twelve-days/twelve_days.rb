@@ -14,19 +14,21 @@ module TwelveDays
   ORDINALS = %w[first second third fourth fifth sixth seventh
                 eighth ninth tenth eleventh twelfth].freeze
 
-  def self.song
+  module_function
+
+  def song
     gifts = []
-    ORDINALS.zip(GIFTS).map do |day, gift|
+    ORDINALS.zip(GIFTS).map do |ordinal, gift|
       gifts << gift
-      sentence(day, gifts.reverse)
+      sentence(ordinal, list(gifts.reverse))
     end.join("\n")
   end
 
-  def self.sentence(day, gifts)
-    "On the #{day} day of Christmas my true love gave to me: #{list(gifts)}.\n"
+  def sentence(ordinal, gift_list)
+    "On the #{ordinal} day of Christmas my true love gave to me: #{gift_list}.\n"
   end
 
-  def self.list(gifts)
+  def list(gifts)
     return gifts[0].gsub(/\Aand /, '') if gifts.count == 1
 
     gifts.join(', ')
