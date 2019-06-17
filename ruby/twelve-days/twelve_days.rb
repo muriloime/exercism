@@ -17,8 +17,8 @@ module TwelveDays
   module_function
 
   def song
-    (0..GIFTS.size - 1).map do |i|
-      sentence(ORDINALS[i], list(GIFTS[0..i]))
+    ORDINALS.map.with_index do |ordinal, i|
+      sentence(ordinal, list(GIFTS[0..i]))
     end.join("\n")
   end
 
