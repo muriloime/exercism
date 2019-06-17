@@ -17,10 +17,8 @@ module TwelveDays
   module_function
 
   def song
-    gifts = []
-    ORDINALS.zip(GIFTS).map do |ordinal, gift|
-      gifts << gift
-      sentence(ordinal, list(gifts.reverse))
+    (0..GIFTS.size - 1).map do |i|
+      sentence(ORDINALS[i], list(GIFTS[0..i]))
     end.join("\n")
   end
 
@@ -31,6 +29,6 @@ module TwelveDays
   def list(gifts)
     return gifts[0].gsub(/\Aand /, '') if gifts.count == 1
 
-    gifts.join(', ')
+    gifts.reverse.join(', ')
   end
 end
