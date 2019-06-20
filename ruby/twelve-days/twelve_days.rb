@@ -33,9 +33,12 @@ module TwelveDays
       end
     end
 
+    def gifts(n)
+      GIFTS[0..n].reverse
+    end
+
     def verse(n)
-      gifts = GIFTS[0..n].reverse
-      "On the #{ORDINALS[n]} day of Christmas my true love gave to me: #{to_phrase(gifts)}.\n"
+      "On the #{ORDINALS[n]} day of Christmas my true love gave to me: #{to_phrase(gifts(n))}.\n"
     end
   end
 end
