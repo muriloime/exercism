@@ -1,4 +1,12 @@
 module TwelveDays
+  def self.song
+    12.times.map do |i|
+      Verse.new(i).to_s
+    end.join("\n")
+  end
+end
+
+class Verse
   GIFTS = ['a Partridge in a Pear Tree',
            'two Turtle Doves',
            'three French Hens',
@@ -14,31 +22,25 @@ module TwelveDays
   ORDINALS = %w[first second third fourth fifth sixth seventh
                 eighth ninth tenth eleventh twelfth].freeze
 
-  def self.song
-    GIFTS.count.times.map do |i|
-      verse(i)
-    end.join("\n")
+  def initialize(number)
+    @number = number
   end
 
-  class << self
-    private
+  def gifts
+    GIFTS[0..@number].reverse
+  end
 
-    def to_phrase(gifts)
-      *init_gifts, last_gift = gifts
-      case init_gifts.length
-      when 0
-        last_gift.to_s
-      else
-        "#{init_gifts.join(', ')}, and #{last_gift}"
-      end
-    end
+  def to_s
+    "On the #{ORDINALS[@number]} day of Christmas my true love gave to me: #{gift_list}.\n"
+  end
 
-    def gifts(n)
-      GIFTS[0..n].reverse
-    end
-
-    def verse(n)
-      "On the #{ORDINALS[n]} day of Christmas my true love gave to me: #{to_phrase(gifts(n))}.\n"
+  def gift_list
+    *init_gifts, last_gift = gifts
+    case init_gifts.length
+    when 0
+      last_gift.to_s
+    else
+      "#{init_gifts.join(', ')}, and #{last_gift}"
     end
   end
 end
