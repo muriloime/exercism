@@ -15,14 +15,14 @@ module TwelveDays
                 eighth ninth tenth eleventh twelfth].freeze
 
   def self.song
-    (0..ORDINALS.count - 1).map do |i|
+    GIFTS.count.times.map do |i|
       verse(i)
     end.join("\n")
   end
 
-  private
-
   class << self
+    private
+
     def to_phrase(gifts)
       *init_gifts, last_gift = gifts
       case init_gifts.length
