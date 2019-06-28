@@ -25,16 +25,16 @@ class Verse
   def initialize(number)
     @number = number
   end
-
-  def gifts
-    GIFTS[0..@number].reverse
-  end
-
+  
   def to_s
-    "On the #{ORDINALS[@number]} day of Christmas my true love gave to me: #{gift_list}.\n"
+    "On the #{ORDINALS[@number]} day of Christmas my true love gave to me: #{to_phrase(gift_list)}.\n"
   end
 
   def gift_list
+    GIFTS[0..@number].reverse
+  end
+
+  def to_phrase(gifts)
     *init_gifts, last_gift = gifts
     case init_gifts.length
     when 0
