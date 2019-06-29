@@ -1,4 +1,5 @@
 class Meetup
+  ORDINALS = %i[first second third fourth].freeze
   def initialize(month, year)
     @month = month
     @year = year
@@ -11,14 +12,8 @@ class Meetup
     candidates = (start_date..end_date).select(&:"#{day}?")
 
     case descriptor
-    when :first
-      candidates.first
-    when :second
-      candidates[1]
-    when :third
-      candidates[2]
-    when :fourth
-      candidates[3]
+    when *ORDINALS
+      candidates[ORDINALS.index(descriptor)]
     when :last
       candidates[-1]
     when :teenth
