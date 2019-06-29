@@ -4,17 +4,19 @@ class Grep
     @pattern = pattern
   end
 
-  def pattern
-    pattern = if @flags.include?('-x')
-                "#{@pattern}$"
-              else
-                @pattern
-              end
-
-    if @flags.include?('-i')
-      /#{pattern}/i
+  def xflag_pattern
+    if @flags.include?('-x')
+      "^#{@pattern}$"
     else
-      /#{pattern}/
+      @pattern
+    end
+  end
+
+  def pattern
+    if @flags.include?('-i')
+      /#{xflag_pattern}/i
+    else
+      /#{xflag_pattern}/
     end
   end
 
@@ -26,17 +28,19 @@ class Grep
     end
   end
 
-  def output(line, i, filename)
-    new_line = if @flags.include?('-n')
-                 "#{i + 1}:#{line}"
-               else
-                 line
-    end
-
-    if filename
-      "#{filename}:#{new_line}"
+  def nflag_output(line, i)
+    if @flags.include?('-n')
+      "#{i + 1}:#{line}"
     else
-      new_line
+      line
+    end
+  end
+
+  def output(line, i, filename)
+    if filename
+      "#{filename}:#{nflag_output(line, i)}"
+    else
+      nflag_output(line, i)
     end
   end
 
