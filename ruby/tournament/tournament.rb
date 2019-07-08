@@ -1,23 +1,18 @@
 class Tournament
   def initialize(input)
-    @scores = Hash.new { |hash, key| hash[key] = Results.new }
+    @match_history = MatchHistory.new
+    parse(input)
+  end
+
+  def parse(input)
     input.split("\n").each do |match|
       home, away, result = match.split(';')
-      add_match(home, away, result)
+      @match_history.add_match(home, away, result)
     end
   end
 
-  def sorted_scores
-    @scores.sort_by { |k, x| [-x.p, k] }
-  end
-
   def tally
-    [Results.header, *sorted_scores.map { |k, v| v.tally(k) }].map { |row| row + "\n" }.join
-  end
-
-  def add_match(home, away, result)
-    @scores[home].home(result)
-    @scores[away].away(result)
+    @match_history.tally
   end
 
   def self.tally(input)
@@ -25,11 +20,30 @@ class Tournament
   end
 end
 
-class Results
-  attr_reader :mp, :w, :d
+class MatchHistory
   RESULT = { 'win' => 1,
              'loss' => -1,
              'draw' => 0 }.freeze
+  def initialize
+    @scores = Hash.new { |hash, key| hash[key] = Results.new }
+  end
+
+  def tally
+    [Results.header, *sorted_scores.map { |k, v| v.tally(k) }].map { |row| row + "\n" }.join
+  end
+
+  def sorted_scores
+    @scores.sort_by { |k, x| [-x.p, k] }
+  end
+
+  def add_match(home, away, result)
+    @scores[home].add(RESULT[result])
+    @scores[away].add(RESULT[result] * -1)
+  end
+end
+
+class Results
+  attr_reader :mp, :w, :d
 
   def initialize
     @mp = 0
@@ -43,14 +57,6 @@ class Results
 
   def l
     mp - w - d
-  end
-
-  def home(result)
-    add(RESULT[result])
-  end
-
-  def away(result)
-    add(-RESULT[result])
   end
 
   def add(result)
