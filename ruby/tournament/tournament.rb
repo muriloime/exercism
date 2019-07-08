@@ -13,7 +13,7 @@ class Tournament
   end
 
   def tally
-    @formatter.display(@match_history.scores)
+    @formatter.new(@match_history.scores).display
   end
 
   def self.tally(input)
@@ -39,26 +39,41 @@ class MatchHistory
 end
 
 class TableFormatter
-  def self.display(scores)
-    [header, *sorted_scores(scores).map { |k, v| show(v, k) }].join
+  attr_reader :scores
+
+  def initialize(scores)
+    @scores = scores
   end
 
-  def self.sorted_scores(scores)
+  def display
+    [self.class.header, *sorted_scores.map { |k, v| show(v, k) }].join
+  end
+
+  def sorted_scores
     scores.sort_by { |k, x| [-x.p, k] }
   end
 
   def self.header
-    RowFormatter.display(%w[Team MP W D L P])
+    RowFormatter.new(%w[Team MP W D L P]).display
   end
 
-  def self.show(result, team)
-    RowFormatter.display([team, result.mp, result.w, result.d, result.l, result.p])
+  def show(result, team)
+    RowFormatter.new([team, result.mp, result.w, result.d, result.l, result.p]).display
   end
 end
 
-module RowFormatter
-  def self.display(cells)
-    format = [[30, false]] + [[2, true]] * (cells.size - 1)
+class RowFormatter
+  attr_reader :cells
+
+  def initialize(cells)
+    @cells = cells
+  end
+
+  def format
+    [[30, false]] + [[2, true]] * (cells.size - 1)
+  end
+
+  def display
     cells.zip(format).map do |c|
       CellFormatter.display(*c.flatten)
     end.join(' | ') + "\n"
