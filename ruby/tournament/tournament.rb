@@ -44,7 +44,7 @@ class TableFormatter
   end
 
   def sorted_scores
-    scores.sort_by { |k, x| [-x.p, k] }
+    scores.sort_by { |k, x| [-x.points, k] }
   end
 
   def self.header
@@ -52,7 +52,7 @@ class TableFormatter
   end
 
   def show(result, team)
-    RowFormatter.new([team, result.mp, result.w, result.d, result.l, result.p]).display
+    RowFormatter.new([team, result.matches, result.wins, result.draws, result.loses, result.points]).display
   end
 end
 
@@ -85,28 +85,28 @@ class CellFormatter
 end
 
 class Results
-  attr_reader :mp, :w, :d
+  attr_reader :matches, :wins, :draws
 
   def initialize
-    @mp = 0
-    @w = 0
-    @d = 0
+    @matches = 0
+    @wins = 0
+    @draws = 0
   end
 
-  def p
-    w * 3 + d
+  def points
+    wins * 3 + draws
   end
 
-  def l
-    mp - w - d
+  def loses
+    matches - wins - draws
   end
 
   def add(result)
-    @mp += 1
+    @matches += 1
     if result == 1
-      @w += 1
+      @wins += 1
     elsif result.zero?
-      @d += 1
+      @draws += 1
     end
   end
 end
