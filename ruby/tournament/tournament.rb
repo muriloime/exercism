@@ -1,48 +1,42 @@
 class Tournament
-  def initialize(input, formatter = TableFormatter)
-    @match_history = MatchHistory.new
-    @formatter = formatter
-    parse(input)
-  end
+  RESULT = { 'win' => 1,
+             'loss' => -1,
+             'draw' => 0 }.freeze
 
-  def parse(input)
-    input.split("\n").each do |match|
-      home, away, result = match.split(';')
-      @match_history.add_match(home, away, result)
+  def self.parse(input)
+    MatchHistory.new.tap do |match_history|
+      input.split("\n").each do |match|
+        home, away, result = match.split(';')
+        match_history.add_match(home, away, RESULT[result])
+      end
     end
   end
 
-  def tally
-    @formatter.new(@match_history.scores).display
-  end
-
   def self.tally(input)
-    new(input).tally
+    parse(input).then do |match_history|
+      TableFormatter.new(match_history).display
+    end
   end
 end
 
 class MatchHistory
   attr_reader :scores
 
-  RESULT = { 'win' => 1,
-             'loss' => -1,
-             'draw' => 0 }.freeze
-
   def initialize
     @scores = Hash.new { |hash, key| hash[key] = Results.new }
   end
 
   def add_match(home, away, result)
-    @scores[home].add(RESULT[result])
-    @scores[away].add(RESULT[result] * -1)
+    @scores[home].add(result)
+    @scores[away].add(-result)
   end
 end
 
 class TableFormatter
   attr_reader :scores
 
-  def initialize(scores)
-    @scores = scores
+  def initialize(match_history)
+    @scores = match_history.scores
   end
 
   def display
@@ -65,24 +59,28 @@ end
 class RowFormatter
   attr_reader :cells
 
+  FORMAT = [[30, false]].to_enum + [[2, true]].cycle
+
   def initialize(cells)
     @cells = cells
   end
 
-  def format
-    [[30, false]] + [[2, true]] * (cells.size - 1)
-  end
-
   def display
-    cells.zip(format).map do |c|
-      CellFormatter.display(*c.flatten)
+    cells.zip(FORMAT).map do |content, *format|
+      CellFormatter.new(content, *format.flatten).display
     end.join(' | ') + "\n"
   end
 end
 
-module CellFormatter
-  def self.display(content, size, align_right = true)
-    format("%#{align_right ? '' : '-'}#{size}.#{size}s", content).to_s
+class CellFormatter
+  def initialize(content, size, align_right = true)
+    @content = content
+    @size = size
+    @align_sign = align_right ? '+' : '-'
+  end
+
+  def display
+    format("%#{@align_sign}#{@size}.#{@size}s", @content).to_s
   end
 end
 
