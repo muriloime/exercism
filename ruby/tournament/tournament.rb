@@ -3,7 +3,7 @@ class Tournament
     MatchHistory.new.tap do |match_history|
       input.split("\n").each do |match|
         home, away, result = match.split(';')
-        match_history.add_match(home, away, result.to_sym)
+        match_history.add_match(home, away, Result.new(result))
       end
     end
   end
@@ -17,17 +17,14 @@ end
 
 class MatchHistory
   attr_reader :scores
-  INVERSE = { win: :loss,
-              loss: :win,
-              draw: :draw }.freeze
 
   def initialize
-    @scores = Hash.new { |hash, key| hash[key] = Results.new }
+    @scores = Hash.new { |hash, key| hash[key] = Results.new(key) }
   end
 
   def add_match(home, away, result)
     @scores[home].add(result)
-    @scores[away].add(INVERSE[result.to_sym])
+    @scores[away].add(result.inverse)
   end
 end
 
@@ -35,32 +32,56 @@ class TableFormatter
   attr_reader :scores
 
   ROW_FORMATTER = "%-30s | %2s | %2s | %2s | %2s | %2s\n".freeze
-  HEADER = format(ROW_FORMATTER, 'Team', 'MP', 'W', 'D', 'L', 'P').to_s
+  HEADER = "Team                           | MP |  W |  D |  L |  P\n".freeze
 
   def initialize(match_history)
     @scores = match_history.scores
   end
 
   def display
-    [HEADER, *sorted_scores.map { |k, v| show(v, k) }].join
+    [HEADER, *sorted_scores.map { |_, v| show(v) }].join
   end
 
   def sorted_scores
-    scores.sort_by { |k, x| [-x.points, k] }
+    scores.sort_by { |_, result| result }
   end
 
-  def show(result, team)
-    format(ROW_FORMATTER, team, result.matches, result.wins, result.draws, result.loses, result.points).to_s
+  def show(result)
+    format(ROW_FORMATTER, *result.row_list).to_s
+  end
+end
+
+class Result
+  INVERSE = { win: :loss,
+              loss: :win,
+              draw: :draw }.freeze
+
+  def initialize(value)
+    @value = value.to_sym
+  end
+
+  def inverse
+    self.class.new(INVERSE[@value])
+  end
+
+  def win?
+    @value == :win
+  end
+
+  def draw?
+    @value == :draw
+  end
+
+  def loss?
+    @value == :loss
   end
 end
 
 class Results
-  attr_reader :matches, :wins, :draws
-
-  def initialize
-    @matches = 0
-    @wins = 0
-    @draws = 0
+  attr_reader :name
+  def initialize(name)
+    @results = []
+    @name = name
   end
 
   def points
@@ -68,12 +89,30 @@ class Results
   end
 
   def loses
-    matches - wins - draws
+    @results.select(&:loss?).count
+  end
+
+  def draws
+    @results.select(&:draw?).count
+  end
+
+  def wins
+    @results.select(&:win?).count
+  end
+
+  def matches
+    @results.count
   end
 
   def add(result)
-    @matches += 1
-    @wins += 1 if result == :win
-    @draws += 1 if result == :draw
+    @results << result
+  end
+
+  def row_list
+    [name, matches, wins, draws, loses, points]
+  end
+
+  def <=>(other)
+    [-points, name] <=> [-other.points, other.name]
   end
 end
