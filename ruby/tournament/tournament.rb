@@ -3,7 +3,7 @@ class Tournament
     MatchHistory.new.tap do |match_history|
       input.split("\n").each do |match|
         home, away, result = match.split(';')
-        match_history.add_match(home, away, result.to_sym)
+        match_history.add_match(home, away, result)
       end
     end
   end
@@ -27,8 +27,19 @@ class MatchHistory
   end
 
   def add_match(home, away, result)
-    @teams[home].send((result.to_s + '!').to_sym)
-    @teams[away].send((INVERSE[result].to_s + '!').to_sym)
+    case result
+    when 'win'
+      @teams[home].win!
+      @teams[away].loss!
+    when 'draw'
+      @teams[home].draw!
+      @teams[away].draw!
+    when 'loss'
+      @teams[home].loss!
+      @teams[away].win!
+    else
+      raise ArgumentError, 'unknown result'
+    end
   end
 end
 
