@@ -10,55 +10,56 @@ class Tournament
 
   def self.tally(input)
     parse(input).then do |match_history|
-      TableFormatter.new(match_history.teams.values).display
+      TableFormatter.display(match_history.teams)
     end
   end
 end
 
 class MatchHistory
-  attr_reader :teams
-
-  INVERSE = { win: :loss,
-              loss: :win,
-              draw: :draw }.freeze
-
   def initialize
-    @teams = Hash.new { |hash, key| hash[key] = Team.new(key) }
+    @teams_hash = Hash.new { |hash, key| hash[key] = Team.new(key) }
+  end
+
+  def teams
+    @teams_hash.values
   end
 
   def add_match(home, away, result)
     case result
     when 'win'
-      @teams[home].win!
-      @teams[away].loss!
+      @teams_hash[home].win!
+      @teams_hash[away].loss!
     when 'draw'
-      @teams[home].draw!
-      @teams[away].draw!
+      @teams_hash[home].draw!
+      @teams_hash[away].draw!
     when 'loss'
-      @teams[home].loss!
-      @teams[away].win!
+      @teams_hash[home].loss!
+      @teams_hash[away].win!
     else
       raise ArgumentError, 'unknown result'
     end
   end
 end
 
-class TableFormatter
+module TableFormatter
   attr_reader :teams
 
   ROW_FORMATTER = "%-30s | %2s | %2s | %2s | %2s | %2s\n".freeze
   HEADER = "Team                           | MP |  W |  D |  L |  P\n".freeze
 
-  def initialize(teams)
-    @teams = teams
+  def self.display(teams)
+    [HEADER, *sort(teams).map { |team| show(team) }].join
   end
 
-  def display
-    [HEADER, *teams.sort.map { |team| show(team) }].join
+  def self.show(team)
+    format(ROW_FORMATTER,
+           team.name, team.matches,
+           team.wins, team.draws,
+           team.loses, team.points).to_s
   end
 
-  def show(team)
-    format(ROW_FORMATTER, *team.row_list).to_s
+  def self.sort(teams)
+    teams.sort_by { |team| [-team.points, team.name] }
   end
 end
 
@@ -88,13 +89,5 @@ class Team
 
   def loss!
     @loses += 1
-  end
-
-  def row_list
-    [name, matches, wins, draws, loses, points]
-  end
-
-  def <=>(other)
-    [-points, name] <=> [-other.points, other.name]
   end
 end
