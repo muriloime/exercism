@@ -15,9 +15,8 @@ module RailFenceCipher
   def zigzag(rails, signs)
     num = 0 # necessary for stable sort
     zigzag = ([*0..rails - 1] + [*1..rails - 2].reverse).cycle
-    zigzag.first(signs.size)
-          .zip(signs)
-          .sort_by { |x| num += 1; [x.first, num] }
-          .map(&:last)
+    signs.zip(zigzag)
+         .sort_by { |_sign, z| num += 1; [z, num] }
+         .map(&:first)
   end
 end
