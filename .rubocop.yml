@@ -1,0 +1,77 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+AllCops:
+  Exclude:
+    - "bin/**/*"
+    - "db/**/*"
+    - "config/**/*"
+    - "node_modules/**/*"
+  TargetRubyVersion: 2.6.2
+  DisplayCopNames: true
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "lib/tasks/**/*"
+
+Rails:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+        
+Layout/LineLength:
+  Max: 100
+  IgnoredPatterns: ['(\A|\s)#']
+  Exclude:
+    - "spec/**/*"
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 21
+
+Style/AsciiComments:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 15
+
+Bundler/OrderedGems:
+  Enabled: true
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Rails/DynamicFindBy:
+  Enabled: false
+
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: false
+
+Style/ExponentialNotation:
+  Enabled: true
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
