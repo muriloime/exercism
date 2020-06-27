@@ -18,7 +18,7 @@ class Zipper
   end
 
   def set_value(value, node = focus)
-    node.&set_value(value)
+    node&.set_value(value)
     self
   end
 
