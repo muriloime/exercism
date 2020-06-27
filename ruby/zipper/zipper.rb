@@ -60,22 +60,34 @@ class Zipper
     @focus = @focus_list.pop
     self
   end
+
+  def ==(other)
+    @focus == other.focus
+  end
 end
 
 class Node
   attr_reader :value, :left, :right
 
   def initialize(value, left, right)
-    set_value(value)
+    @value = value
     @left = left
     @right = right
   end
 
-  def set_value(value)
-    @value = value
+  def set_value(node)
+    if node.class == self
+      @value = node.value
+      @left = node.left
+      @right = node.right
+    else
+      @value = node
+      @left = nil
+      @right = nil
+    end
   end
 
   def ==(other)
-    value = other.value
+    value = other&.value && left == other.left && right == other.right
   end
 end
