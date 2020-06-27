@@ -14,15 +14,18 @@ class WordProblem
     operand1.send(operator, operand2)
   end
 
+  def operands
+    @question.scan(%r{[\d\+\-\*/]+})
+  end
+
   def answer
     raise ArgumentError if /[a-zA-Z]/.match?(@question)
 
-    operands = @question.scan(%r{[\d\+\-\*/]+})
+    initial_value, *tail_values = operands
 
-    operands[1..-1]
-      .each_slice(2)
-      .inject(operands[0]) do |last_value, (operator, operand)|
-      eval_binary_expression(last_value.to_i, operator, operand.to_i)
+    tail_values.each_slice(2)
+               .inject(initial_value.to_i) do |accumulator, (operator, operand)|
+      eval_binary_expression(accumulator, operator, operand.to_i)
     end
   end
 end
