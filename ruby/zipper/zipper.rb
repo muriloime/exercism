@@ -18,16 +18,18 @@ class Zipper
   end
 
   def set_value(value, node = focus)
-    node&.set_value(value)
+    node.value = value
     self
   end
 
   def set_left(value)
-    set_value(value, focus.left)
+    focus.left = value
+    self
   end
 
   def set_right(value)
-    set_value(value, focus.right)
+    focus.right = value
+    self
   end
 
   def left
@@ -67,7 +69,7 @@ class Zipper
 end
 
 class Node
-  attr_reader :value, :left, :right
+  attr_accessor :value, :left, :right
 
   def initialize(value, left, right)
     @value = value
